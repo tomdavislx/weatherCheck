@@ -71,32 +71,49 @@ class Parser {
         return (json["query"]["results"]["channel"]["item"]["condition"]["temp"].string, json["query"]["results"]["channel"]["item"]["condition"]["text"].string)
     }
     
+    func getConditionCode(data:Data) -> (String?)  {
+        
+        let json = JSON(data: data)
+        
+
+        if let code = (json["query"]["results"]["channel"]["item"]["condition"]["code"].string) {
+            print(code)
+            return code
+        } else {
+            return nil
+        }
+        
+    }
+
+
+    
+    
     func getForecast(data:Data) -> [Forecast] {
         
         let json = JSON(data: data)
         
         var forecasts : [Forecast] = []
         
-        for forecastEntry in 0...4 {
+        for item in 0...4 {
             
             let forecast = Forecast()
             
-            if let high = (json["query"]["results"]["channel"]["item"]["forecast"][forecastEntry]["high"].string) {
+            if let high = (json["query"]["results"]["channel"]["item"]["forecast"][item]["high"].string) {
                 forecast.high = high
             }
-            if let low = (json["query"]["results"]["channel"]["item"]["forecast"][forecastEntry]["low"].string) {
+            if let low = (json["query"]["results"]["channel"]["item"]["forecast"][item]["low"].string) {
                 forecast.low = low
             }
-            if let day = (json["query"]["results"]["channel"]["item"]["forecast"][forecastEntry]["day"].string) {
+            if let day = (json["query"]["results"]["channel"]["item"]["forecast"][item]["day"].string) {
                 forecast.day = day
             }
-            if let condition = (json["query"]["results"]["channel"]["item"]["forecast"][forecastEntry]["text"].string) {
+            if let condition = (json["query"]["results"]["channel"]["item"]["forecast"][item]["text"].string) {
                 forecast.condition = condition
             }
             
             forecasts.append(forecast)
-//            print(forecast.condition)
-            print(forecasts)
+            //print(forecast.condition)
+            //print(forecasts)
             
         }
         

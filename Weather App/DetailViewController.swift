@@ -17,20 +17,18 @@ class DetailViewController: NSViewController {
     @IBOutlet weak var currentConditionLabel: NSTextField!
     @IBOutlet weak var infoLabel: NSTextField!
     @IBOutlet weak var yahooImageView: NSImageView!
+    @IBOutlet weak var conditionImageView: NSImageView!
+    @IBOutlet weak var progressIndicator: NSProgressIndicator!
     
     var location : LocationDB? = nil
     var locationsVC : LocationViewController? = nil
-    
-    
-    
-    
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do view setup here.
         clearView()
-        //        yahooImageView.image = image
+        let image = #imageLiteral(resourceName: "yahoologo")
+        yahooImageView.image = image
         
     }
     
@@ -42,6 +40,8 @@ class DetailViewController: NSViewController {
             countryLabel.stringValue = location!.countryName!
             tempLabel.stringValue = "Updating..."
             currentConditionLabel.stringValue = "Updating..."
+            self.conditionImageView.image = nil
+            progressIndicator.startAnimation(self)
             
             if let url = URL(string: location!.queryURL!) {
                 
@@ -62,13 +62,17 @@ class DetailViewController: NSViewController {
                                 self.currentConditionLabel.stringValue = info.condition!
                                 
                                 self.getForecasts()
-                                
+                                self.getConditionImage()
                                 
                             } else {
                                 self.tempLabel.stringValue = "Unable to Retrieve"
                                 self.currentConditionLabel.stringValue = "Unable to Retrieve"
+                                
                             }
                             
+                        }
+                        DispatchQueue.main.async {
+                            self.progressIndicator.stopAnimation(self)
                         }
                     }
                     }.resume()
@@ -95,7 +99,7 @@ class DetailViewController: NSViewController {
                             let info = parser.getForecast(data: data!)
                             
                             if info.count >= 1 {
-//                                print(info)
+                                //                                print(info)
                             } else {
                                 print("Array Empty")
                             }
@@ -108,6 +112,46 @@ class DetailViewController: NSViewController {
         }
     }
     
+    func getConditionImage() {
+        
+        if location?.cityName != nil {
+            
+            if let url = URL(string: location!.queryURL!) {
+                
+                URLSession.shared.dataTask(with: url) { (data:Data?, response:URLResponse?, error:Error?) in
+                    
+                    if error != nil {
+                        print(error!)
+                        
+                    } else {
+                        
+                        if data != nil {
+                            
+                            let parser = Parser()
+                            let code = parser.getConditionCode(data: data!)
+                            
+                            if code != nil {
+                                
+                                let imageURL = "http://l.yimg.com/a/i/us/we/52/\(code!).gif"
+                                
+                                let image = NSImage(byReferencing: URL(string: imageURL)!)
+                                self.conditionImageView.image = image
+                                
+                                
+                            } else {
+                                self.conditionImageView.image = nil
+                            }
+                        }
+                        
+                    }
+                    }.resume()
+            }
+            
+        }
+    }
+    
+    
+    
     
     
     func clearView() {
@@ -117,6 +161,7 @@ class DetailViewController: NSViewController {
         tempLabel.stringValue = ""
         currentConditionLabel.stringValue = ""
         infoLabel.stringValue = ""
+        self.conditionImageView.image = nil
     }
     
     
