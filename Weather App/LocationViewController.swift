@@ -77,6 +77,8 @@ class LocationViewController: NSViewController, NSTableViewDataSource, NSTableVi
                                             DispatchQueue.main.async {
                                                 self.locationTextField.stringValue = ""
                                                 self.getLocations()
+                                                let row = IndexSet(integer: 0)
+                                                self.tableView.selectRowIndexes(row, byExtendingSelection: false)
                                                 if let label = self.detailsVC?.infoLabel {
                                                     label.stringValue = "City Added Succesfully!"
                                                     label.textColor = NSColor.black
