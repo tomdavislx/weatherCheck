@@ -87,10 +87,12 @@ class LocationViewController: NSViewController, NSTableViewDataSource, NSTableVi
                                         }
                                     }
                                 } else {
-                                    print("No City was returned")
-                                    if let label = self.detailsVC?.infoLabel {
-                                        label.stringValue = "No City Was Found"
-                                        label.textColor = NSColor.red
+                                    DispatchQueue.main.async {
+                                        
+                                        if let label = self.detailsVC?.infoLabel {
+                                            label.stringValue = "No City Was Found"
+                                            label.textColor = NSColor.red
+                                        }
                                     }
                                 }
                             }

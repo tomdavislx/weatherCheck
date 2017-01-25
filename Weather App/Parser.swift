@@ -77,7 +77,6 @@ class Parser {
         
 
         if let code = (json["query"]["results"]["channel"]["item"]["condition"]["code"].string) {
-            print(code)
             return code
         } else {
             return nil

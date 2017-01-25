@@ -40,7 +40,7 @@ class DetailViewController: NSViewController {
             countryLabel.stringValue = location!.countryName!
             tempLabel.stringValue = "Updating..."
             currentConditionLabel.stringValue = "Updating..."
-            self.conditionImageView.image = nil
+            conditionImageView.image = nil
             progressIndicator.startAnimation(self)
             
             if let url = URL(string: location!.queryURL!) {
@@ -58,11 +58,16 @@ class DetailViewController: NSViewController {
                             let info = parser.getTemp(data: data!)
                             
                             if info.temp != nil {
+                                
+                                DispatchQueue.main.async {
+                                
                                 self.tempLabel.stringValue = "\(info.temp!) °F / \(parser.celsiusConversion(degrees: info.temp!)) °C"
                                 self.currentConditionLabel.stringValue = info.condition!
                                 
-                                self.getForecasts()
+                                // self.getForecasts()
                                 self.getConditionImage()
+                                    
+                                }
                                 
                             } else {
                                 self.tempLabel.stringValue = "Unable to Retrieve"
@@ -133,10 +138,10 @@ class DetailViewController: NSViewController {
                             if code != nil {
                                 
                                 let imageURL = "http://l.yimg.com/a/i/us/we/52/\(code!).gif"
-                                
                                 let image = NSImage(byReferencing: URL(string: imageURL)!)
+                                DispatchQueue.main.async {
                                 self.conditionImageView.image = image
-                                
+                                }
                                 
                             } else {
                                 self.conditionImageView.image = nil
